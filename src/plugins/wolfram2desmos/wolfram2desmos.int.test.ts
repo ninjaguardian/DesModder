@@ -10,17 +10,20 @@ async function getText(
       return item.latex;
     case "text":
       return item.text;
+    case "folder":
+      return item.title;
     default:
       throw new Error("Not expression, sad.");
   }
 }
+
+const modifierKey = process.platform === "darwin" ? "Meta" : "Control";
 
 async function paste(driver: Driver, text: string) {
   await driver.evaluate(async (text) => {
     await navigator.clipboard.writeText(text);
   }, text);
 
-  const modifierKey = process.platform === "darwin" ? "Meta" : "Control";
   await driver.keyboard.down(modifierKey);
   await driver.keyboard.press("KeyV");
   await driver.keyboard.up(modifierKey);
@@ -29,6 +32,7 @@ async function paste(driver: Driver, text: string) {
 testWithPage("wolfram2desmos", async (driver) => {
   let index = 0;
 
+  // Test when disabled
   await driver.disablePlugin("wolfram2desmos");
   await driver.focusIndex(index);
   await paste(driver, "#f012ab");
@@ -37,6 +41,7 @@ testWithPage("wolfram2desmos", async (driver) => {
   index++;
   await driver.keyboard.press("Enter");
 
+  // Test when enabled
   await driver.enablePlugin("wolfram2desmos");
   await paste(driver, "#f012ab");
   expect(await getText(driver, index)).toEqual(
@@ -46,6 +51,7 @@ testWithPage("wolfram2desmos", async (driver) => {
   index++;
   await driver.keyboard.press("Enter");
 
+  // Test when disabled (again)
   await driver.disablePlugin("wolfram2desmos");
   await paste(driver, "#f012ab");
   expect(await getText(driver, index)).toEqual("#f012ab");
@@ -53,8 +59,22 @@ testWithPage("wolfram2desmos", async (driver) => {
   index++;
   await driver.keyboard.press("Enter");
 
+  // Test text
   await driver.enablePlugin("wolfram2desmos");
   await driver.keyboard.press('"');
+  await paste(driver, "#f012ab");
+  expect(await getText(driver, index)).toEqual("#f012ab");
+
+  index++;
+  await driver.keyboard.press("Enter");
+
+  // Test folder
+  await driver.enablePlugin("wolfram2desmos");
+  await driver.keyboard.down("Control");
+  await driver.keyboard.down(modifierKey);
+  await driver.keyboard.press("KeyF");
+  await driver.keyboard.up(modifierKey);
+  await driver.keyboard.up("Control");
   await paste(driver, "#f012ab");
   expect(await getText(driver, index)).toEqual("#f012ab");
 
