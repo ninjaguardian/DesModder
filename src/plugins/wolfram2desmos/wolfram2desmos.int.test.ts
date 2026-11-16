@@ -14,13 +14,13 @@ async function getText(driver: Driver, index: number): Promise<string> {
 
 async function paste(driver: Driver, text: string) {
   await driver.evaluate(async (text) => {
-    const data = new DataTransfer();
-    data.setData("text/plain", text);
-    const event = new ClipboardEvent("paste", {
-      clipboardData: data,
-    });
-    document.activeElement?.dispatchEvent(event);
+    await navigator.clipboard.writeText(text);
   }, text);
+
+  const modifierKey = process.platform === "darwin" ? "Meta" : "Control";
+  await driver.keyboard.down(modifierKey);
+  await driver.keyboard.press("KeyV");
+  await driver.keyboard.up(modifierKey);
 }
 
 testWithPage("wolfram2desmos", async (driver) => {
