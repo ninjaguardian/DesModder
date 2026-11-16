@@ -75,7 +75,9 @@ testWithPage("wolfram2desmos", async (driver) => {
   await driver.keyboard.press("KeyF");
   await driver.keyboard.up(modifierKey);
   await driver.keyboard.up("Control");
+  console.log(await driver.getState());
   await paste(driver, "#f012ab");
+  console.log(await driver.getState());
   expect(await getText(driver, index)).toEqual("#f012ab");
 
   await driver.clean();
