@@ -1,6 +1,9 @@
 import { clean, Driver, testWithPage } from "#tests";
 
-async function getText(driver: Driver, index: number): Promise<string> {
+async function getText(
+  driver: Driver,
+  index: number
+): Promise<string | undefined> {
   const item = (await driver.getState()).expressions.list[index];
   switch (item.type) {
     case "expression":
