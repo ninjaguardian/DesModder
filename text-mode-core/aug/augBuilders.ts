@@ -42,6 +42,13 @@ export function comparator(
   };
 }
 
+export function listOf<T>(
+  mapper: (value: T) => Aug.Latex.Constant,
+  ...children: T[]
+): Aug.Latex.List {
+  return list(...children.map(mapper));
+}
+
 export function list(...children: Aug.Latex.AnyChild[]): Aug.Latex.List {
   return {
     type: "List",

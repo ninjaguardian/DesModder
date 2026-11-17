@@ -11,6 +11,7 @@ import {
   id,
   list,
   listAccess,
+  listOf,
   negative,
   number,
   positive,
@@ -843,24 +844,38 @@ describe("Regressions", () => {
 describe("vizProps", () => {
   testStmt(
     "Histogram",
-    `histogram([1, 2, 3.5, 4]) @{ vizProps: @{ binAlignment: "left", histogramMode: "relative" } }`,
+    `histogram([1, 2, 3.5, 4]) @{
+      vizProps: @{
+        binAlignment: "left",
+        histogramMode: "relative"
+      }
+    }`,
     {
       ...exprDefaults,
       vizProps: {
         binAlignment: "left",
         histogramMode: "relative",
+        dotplotMode: "exact",
       },
+      latex: functionCall(id("histogram"), [listOf(number, 1, 2, 3.5, 4)]),
     }
   );
   testStmt(
     "Dotplot",
-    `dotplot([1, 2, 3.5, 4]) @{ vizProps: @{ dotplotMode: "binned", binAlignment: "center" } }`,
+    `dotplot([1, 2, 3.5, 4]) @{
+      vizProps: @{
+        dotplotMode: "binned",
+        binAlignment: "center"
+      }
+    }`,
     {
       ...exprDefaults,
       vizProps: {
         dotplotMode: "binned",
         binAlignment: "center",
+        histogramMode: "count",
       },
+      latex: functionCall(id("dotplot"), [listOf(number, 1, 2, 3.5, 4)]),
     }
   );
   testStmt(
@@ -884,7 +899,11 @@ describe("vizProps", () => {
           alignedAxis: "y",
           showOutliers: false,
         },
+        dotplotMode: "exact",
+        histogramMode: "count",
+        binAlignment: "center",
       },
+      latex: functionCall(id("boxplot"), [listOf(number, 1, 2, 3.5, 4, 25, 4)]),
     }
   );
 });
