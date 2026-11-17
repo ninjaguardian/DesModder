@@ -17,13 +17,12 @@ async function getText(
   }
 }
 
-const modifierKey = process.platform === "darwin" ? "Meta" : "Control";
-
 async function paste(driver: Driver, text: string) {
   await driver.evaluate(async (text) => {
     await navigator.clipboard.writeText(text);
   }, text);
 
+  const modifierKey = process.platform === "darwin" ? "Meta" : "Control";
   await driver.keyboard.down(modifierKey);
   await driver.keyboard.press("KeyV");
   await driver.keyboard.up(modifierKey);
@@ -71,6 +70,7 @@ testWithPage("wolfram2desmos", async (driver) => {
   // Test folder
   await driver.enablePlugin("wolfram2desmos");
   await driver.keyboard.down("Control");
+  const modifierKey = process.platform === "darwin" ? "Meta" : "Alt";
   await driver.keyboard.down(modifierKey);
   await driver.keyboard.press("KeyF");
   await driver.keyboard.up(modifierKey);
