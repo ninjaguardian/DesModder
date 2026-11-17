@@ -62,7 +62,7 @@ testWithPage("wolfram2desmos", async (driver) => {
   await driver.enablePlugin("wolfram2desmos");
   await driver.keyboard.press('"');
   await paste(driver, "#f012ab");
-  //expect(await getText(driver, index)).toEqual("#f012ab");
+  expect(await getText(driver, index)).toEqual("#f012ab");
 
   index++;
   await driver.keyboard.press("Enter");
